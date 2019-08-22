@@ -21,13 +21,13 @@ public class StreamProductor {
   private static final int MENSAJES_ENVIAR = 500_00;
 
   public static void main(String[] args) throws InterruptedException {
-    final var cliente = RedisClient.create("redis://localhost:6379");
+    final var cliente = RedisClient.create(StreamsConstantes.REDIS_URI);
     try (final var con = cliente.connect()) {
       final var cmd = con.sync();
       int i = 0;
       while (i < MENSAJES_ENVIAR) {
         final var res =
-            cmd.xadd("mensajes", Map.of(UUID.randomUUID().toString(), String.valueOf(i)));
+            cmd.xadd(StreamsConstantes.NOMBRE_STREAM, Map.of(UUID.randomUUID().toString(), String.valueOf(i)));
         i++;
         LOGGER.info("enviados: {} - id: {}", i, res);
         Thread.sleep(1_000);

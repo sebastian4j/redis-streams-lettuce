@@ -27,7 +27,7 @@ public class StreamCliente {
    * @throws Exception
    */
   public static void main(String[] args) {
-    final var cliente = RedisClient.create("redis://localhost:6379");
+    final var cliente = RedisClient.create(StreamsConstantes.REDIS_URI);
     String ultimo = "0";
     boolean leyendo = true;
     var cuentaMensajes = 0;
@@ -35,7 +35,7 @@ public class StreamCliente {
       final var cmd = con.sync();
       while (leyendo) {
         final var mensajes = cmd.xread(XReadArgs.Builder.block(Duration.ofSeconds(5)).count(1),
-            StreamOffset.from("mensajes", ultimo));
+            StreamOffset.from(StreamsConstantes.NOMBRE_STREAM, ultimo));
         cuentaMensajes += mensajes.size();
         LOGGER.info("leidos: {}", cuentaMensajes);
         for (final var m : mensajes) {
